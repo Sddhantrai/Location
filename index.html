@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-image: url('bg 2 copy.jpg');
+            height: 100vh;
+            width: 100%;
+            top: 100px;
+            background-size: cover;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* flex-direction: column; */
+            color: white;
+            font-size: 35px;
+            font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        .maindiv{
+            width: 700px;
+            height: 700px;
+            backdrop-filter: blur(10px);
+            border: solid black 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            border-radius: 50px;
+        }
+        button{
+            width:300px;
+            height: 50px;
+            border-radius: 20px;
+            background: transparent;
+            border: solid red 4px;
+            color:white;
+            font-weight: 900;
+            font-size: 30px;
+        }
+        button:hover{
+            border:solid green 4px;
+            transition: 1s;
+        }
+
+    </style>
+</head>
+<body>
+<div class="maindiv">
+    <button class="btn">Click</button>
+    <br>
+    <br>
+    <div> Location : <span class="print"></span></div>
+    <br>
+    <div>Weather : <span class="weather"></span></div>
+    <img class="image" src="" alt="">
+</div>
+</body>
+<script > 
+const button = document.querySelector('.btn');
+const print = document.querySelector('.print');
+const weather = document.querySelector('.weather');
+const image = document.querySelector('.image')
+
+async function getdata (lat, long) {
+    const response = await fetch(`http://api.weatherapi.com/v1/current.json?key=2562b19d03844aad8e953659242004&q=${lat},${long}&aqi=yes`);
+    const data  = await response.json();
+    console.log(data)
+    return data;
+}
+
+async function getlocation(position) {
+   const store = await getdata(position.coords.latitude, position.coords.longitude)
+   print.innerHTML = store.location.name;
+    weather.innerHTML = store.current.condition.text;
+    image.src = store.current.condition.icon;
+}
+
+function error(){
+    console.log("Here are some issue with your location")
+}
+
+button.addEventListener('click', () => {
+    navigator.geolocation.getCurrentPosition(getlocation, error)
+})
+</script>
+</html>
